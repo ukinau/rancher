@@ -6,6 +6,8 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/rancher/rancher/pkg/metrics"
 )
 
 type sessionManager struct {
@@ -40,6 +42,12 @@ func (sm *sessionManager) add(clientKey string, conn *websocket.Conn) *session {
 	defer sm.Unlock()
 
 	sm.clients[clientKey] = append(sm.clients[clientKey], session)
+	if metrics.PrometheusMetrics {
+		metrics.TotalAddWS.With(
+			prometheus.Labels{
+				"clientkey": clientKey,
+			}).Inc()
+	}
 
 	return session
 }
@@ -61,6 +69,13 @@ func (sm *sessionManager) remove(s *session) {
 		delete(sm.clients, s.clientKey)
 	} else {
 		sm.clients[s.clientKey] = newSessions
+	}
+
+	if metrics.PrometheusMetrics {
+		metrics.TotalRemoveWS.With(
+			prometheus.Labels{
+				"clientkey": s.clientKey,
+			}).Inc()
 	}
 
 	s.Close()

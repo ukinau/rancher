@@ -6,6 +6,9 @@ import (
 	"net"
 	"sync"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/rancher/rancher/pkg/metrics"
 )
 
 type connection struct {
@@ -30,10 +33,24 @@ func newConnection(connID int64, session *session, proto, address string) *conne
 		session: session,
 		buf:     make(chan []byte, 1024),
 	}
+	if metrics.PrometheusMetrics {
+		metrics.TotalAddConnectionsForWS.With(
+			prometheus.Labels{
+				"clientkey": session.clientKey,
+				"proto":     proto,
+				"addr":      address}).Inc()
+	}
 	return c
 }
 
 func (c *connection) tunnelClose(err error) {
+	if metrics.PrometheusMetrics {
+		metrics.TotalRemoveConnectionsForWS.With(
+			prometheus.Labels{
+				"clientkey": c.session.clientKey,
+				"proto":     c.addr.Network(),
+				"addr":      c.addr.String()}).Inc()
+	}
 	c.writeErr(err)
 	c.doTunnelClose(err)
 }
@@ -76,6 +93,12 @@ func (c *connection) Read(b []byte) (int, error) {
 
 	n := c.copyData(b)
 	if n > 0 {
+		if metrics.PrometheusMetrics {
+			metrics.TotalReceiveBytesOnWS.With(
+				prometheus.Labels{
+					"clientkey": c.session.clientKey,
+				}).Add(float64(n))
+		}
 		return n, nil
 	}
 
@@ -92,6 +115,12 @@ func (c *connection) Read(b []byte) (int, error) {
 
 	c.readBuf = next
 	n = c.copyData(b)
+	if metrics.PrometheusMetrics {
+		metrics.TotalReceiveBytesOnWS.With(
+			prometheus.Labels{
+				"clientkey": c.session.clientKey,
+			}).Add(float64(n))
+	}
 	return n, nil
 }
 
@@ -107,12 +136,26 @@ func (c *connection) Write(b []byte) (int, error) {
 	if !c.writeDeadline.IsZero() {
 		deadline = c.writeDeadline.Sub(time.Now()).Nanoseconds() / 1000000
 	}
-	return c.session.writeMessage(newMessage(c.connID, deadline, b))
+	msg := newMessage(c.connID, deadline, b)
+	if metrics.PrometheusMetrics {
+		metrics.TotalTransmitBytesOnWS.With(
+			prometheus.Labels{
+				"clientkey": c.session.clientKey,
+			}).Add(float64(len(msg.Bytes())))
+	}
+	return c.session.writeMessage(msg)
 }
 
 func (c *connection) writeErr(err error) {
 	if err != nil {
-		c.session.writeMessage(newErrorMessage(c.connID, err))
+		msg := newErrorMessage(c.connID, err)
+		if metrics.PrometheusMetrics {
+			metrics.TotalTransmitErrorBytesOnWS.With(
+				prometheus.Labels{
+					"clientkey": c.session.clientKey,
+				}).Add(float64(len(msg.Bytes())))
+		}
+		c.session.writeMessage(msg)
 	}
 }
 

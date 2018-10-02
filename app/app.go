@@ -12,6 +12,7 @@ import (
 	managementController "github.com/rancher/rancher/pkg/controllers/management"
 	"github.com/rancher/rancher/pkg/dialer"
 	"github.com/rancher/rancher/pkg/k8scheck"
+	"github.com/rancher/rancher/pkg/metrics"
 	"github.com/rancher/rancher/pkg/telemetry"
 	"github.com/rancher/rancher/pkg/tls"
 	"github.com/rancher/rancher/server"
@@ -112,6 +113,7 @@ func Run(ctx context.Context, kubeConfig rest.Config, cfg *Config) error {
 		if err := management.Start(ctx); err != nil {
 			panic(err)
 		}
+		metrics.Register(scaledContext)
 
 		if err := addData(management, *cfg); err != nil {
 			panic(err)

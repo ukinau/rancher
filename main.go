@@ -1,3 +1,4 @@
+// Entrypoint of Rancher Server would run app/app.go
 package main
 
 import (

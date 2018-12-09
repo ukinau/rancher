@@ -1,3 +1,5 @@
+// Package server include the api-server logic, this is kind of entry point for api,
+// All api requests will be handled by this package first and then forwarded to proper functions.
 package server
 
 import (

@@ -1,3 +1,4 @@
+// Package node include node-agent specific initialized logic.
 package node
 
 import (

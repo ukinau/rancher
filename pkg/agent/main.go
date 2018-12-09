@@ -1,3 +1,5 @@
+// Here is the entry point of cluster/node-agent, both of agent will use this main.go,
+// cluster or node will be specified by environment variable CATTLE_CLUSTER=true or false.
 package main
 
 import (

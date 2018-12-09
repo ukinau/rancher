@@ -1,3 +1,5 @@
+// Package k8s include the logic to return kubernete client rancher would use,
+// this can be k8s running rancher, external k8s, k8s rancher would build.
 package k8s
 
 import (

@@ -1,3 +1,4 @@
+// rancher api server to be started by server/server.go, the configuration of this server is maintained by api/controllers/dynamiclistener package.
 package dynamiclistener
 
 import (

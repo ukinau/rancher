@@ -1,3 +1,5 @@
+// This is the one of the api-controllers, which have a responsibility to monitor dynamicschema,
+// which allow us to extend rancher api to support more api without stopping rancher-server.
 package dynamicschema
 
 import (

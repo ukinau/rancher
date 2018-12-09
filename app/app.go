@@ -1,3 +1,4 @@
+// Application entrypoint to start grpc-server, api-controllers, management-controllers, api-servers.
 package app
 
 import (

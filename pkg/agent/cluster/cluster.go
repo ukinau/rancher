@@ -1,3 +1,4 @@
+// Package cluster include the cluster agent specific initialzed logic.
 package cluster
 
 import (

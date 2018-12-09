@@ -1,3 +1,6 @@
+// This is the one of the api-controllers,
+// which have a responsibility to store/get setting data of rancher as CRD in k8s,
+// This controller have no handler right now though this is recognized as controller.
 package settings
 
 import (

@@ -1,3 +1,4 @@
+// This is the entry point of authentication, api logic which need authentication use the function of this directory to authenticat user request
 package requests
 
 import (

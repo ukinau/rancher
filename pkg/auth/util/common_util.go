@@ -1,3 +1,4 @@
+// just util which is used in auth package
 package util
 
 import (

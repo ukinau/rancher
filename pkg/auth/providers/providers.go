@@ -1,3 +1,5 @@
+// rancher support many type of authentication provider,
+// this directory contains various implementation of authentication provider like github, local...
 package providers
 
 import (

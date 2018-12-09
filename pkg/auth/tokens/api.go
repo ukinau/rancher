@@ -1,3 +1,5 @@
+// This directory include the logic related to token handling like retrieving principal from token,
+// api logic of CRUD(api schema of norman framework)
 package tokens
 
 import (

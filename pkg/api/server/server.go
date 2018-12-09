@@ -1,3 +1,6 @@
+// This is the API Server code,
+// which include CRD intialization and API schema(function) generation logic of norman,
+// In Rancher, All api logic is automatically generated based on CRD by Norman Framework.
 package server
 
 import (
